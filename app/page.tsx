@@ -7,6 +7,7 @@ export default function Home() {
       <div className="w-screen h-10 flex justify-evenly bg-blue-900 items-center">
         <Link href="/">Home</Link>
       <Link href="/alunos">Alunos</Link>
+      <Link href="/cursos">Cursos</Link>
         <span>Sair</span>
       </div>
 

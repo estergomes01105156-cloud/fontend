@@ -4,6 +4,7 @@ import { User } from "lucide-react";
 import  Link  from "next/link";
 import { Trash } from "lucide-react";
 import { deleteAluno } from "@/app/alunos/actions";
+import { useRouter } from "next/navigation";
 
 interface Props {
     id: number;
@@ -13,6 +14,13 @@ interface Props {
 
 
 export default function AlunoItem({ id, nome }: Props){
+    const router = useRouter();
+
+    function handleDelete() {
+        deleteAluno(id);
+        router.refresh();
+    }
+
     return (
         <div className="flex gap-3">
         <Link href={`/aluno/${id}`}>
@@ -21,7 +29,7 @@ export default function AlunoItem({ id, nome }: Props){
             <span className="text-blue-300">{nome}</span>
             </li>
         </Link>
-        <button className="text-blue-300" onClick={() => deleteAluno(id)}>
+        <button className="text-blue-300" onClick={handleDelete}>
             <Trash/>
         </button>
         </div>

@@ -14,7 +14,7 @@ export default function AlunoCadastroPage() {
     async function handleSubmit(e: SubmitEvent) {
         e.preventDefault();
         const response = await createAluno({
-            nome,
+            nome: nome,
             idade: Number(idade),
             cpf: Number(cpf),
             email,

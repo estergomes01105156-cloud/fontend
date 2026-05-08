@@ -1,5 +1,4 @@
 import AlunoItem from "@/components/AlunoItem";
-
 import { getAlunos } from "./actions";
 import Link from "next/link";
 
