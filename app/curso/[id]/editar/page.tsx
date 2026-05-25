@@ -36,7 +36,7 @@ export default function CursoPage() {
                 <input value={curso.professor} onChange={(e) => handleChange(e.target.value, "professor")} />
                 <input value={curso.cargaHoraria} type="number" onChange={(e) => handleChange(Number(e.target.value), "cargaHoraria")} />
                 <input value={curso.descricao} onChange={(e) => handleChange(e.target.value, "descricao")} />
-                <button className=""></button>
+                <button className="bg-blue-300 ">Salvar</button>
             </form>
         </div>
     );

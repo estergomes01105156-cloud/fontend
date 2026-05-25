@@ -1,12 +1,12 @@
 "use server";
 
 import { Aluno } from "@/interfaces/alunos";
+import { Curso } from "@/interfaces/cursos";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function getAluno(id: number) {
-  try{
   const cookiesStore = await cookies();
   const token = cookiesStore.get("access_token")?.value;
 
@@ -17,12 +17,11 @@ export async function getAluno(id: number) {
     next: { tags: ["pegarDados"] }
   });
 
-  const data = await response.json();
-
   if (response.status === 401) {
     redirect("/login");
   }
-
+  try {
+  const data = await response.json();
   return data as Aluno;
 } catch (e) {
   console.error(e);
@@ -48,16 +47,74 @@ export async function updateAluno(id: number, aluno: Aluno) {
     redirect("/login");
   }
 
-  const data = await response.json();
-
   if (response.status === 200) {
     revalidateTag("pegarDados", "max");
     return;
   }
-
+  const data = await response.json();
   return data;
   }catch (e) {
   console.error(e);
   return "Erro ao atualizar o aluno";
   }
 }
+
+export async function matriculas(id: number, matriculado: Curso[], desmatriculado: Curso[]) {
+
+    const cookiesStore = await cookies();
+    const token = cookiesStore.get("access_token")?.value;
+
+      let response = await fetch(`http://localhost:8080/matriculas`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        alunoId: id,
+        cursosIds: matriculado.map(curso => curso.id)
+      })
+    });
+
+    if (response.status === 401) {
+      redirect("/login");
+    }
+
+    if (response.status !== 201) {
+      try{
+      const data = await response.json();
+      return data;
+      } catch (e){
+        return "Erro ao matricular o aluno";
+      }
+    }
+
+    response = await fetch(`http://localhost:8080/matriculas`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        alunoId: id,
+        cursosIds: desmatriculado.map(curso => curso.id)
+      })
+    });
+
+    if (response.status === 401) {
+      redirect("/login");
+    }
+
+    if (response.status !== 200) {
+      try{
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      console.error(e);
+      return "Erro ao desmatricular o aluno";
+    }
+  }
+    revalidateTag("pegarDados", "max");
+    revalidateTag("listarCursos", "max");
+    return;
+  } 

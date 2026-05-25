@@ -39,5 +39,12 @@ export async function createAluno(aluno: CreateAluno) {
     if (response.status === 401) {
         redirect("/login");
     }
+
+    try {
+    const data = await response.json();
     return data;
+    } catch (e) {
+        console.error(e);
+        return "Erro ao cadastrar o aluno";
+    }
 }

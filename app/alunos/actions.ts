@@ -5,10 +5,10 @@ import { cookies } from "next/headers";
 import { Aluno } from "@/interfaces/alunos";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { Cat } from "lucide-react";
 
 
 export async function getAlunos() {
-  try {
     const cookiesStore = await cookies();
     const token = cookiesStore.get("access_token")?.value;
 
@@ -23,7 +23,7 @@ export async function getAlunos() {
       redirect("/login");
     }
 
-
+    try {
     if (response.status === 200) {
       const data = await response.json();
       return data as Aluno[];
@@ -50,9 +50,6 @@ export async function deleteAluno(id: number) {
   });
 
 
-  const data = await response.json();
-
-
   if (response.status === 200) {
     revalidateTag("listar", "max");
     return;
@@ -63,6 +60,11 @@ export async function deleteAluno(id: number) {
     redirect("/login");
   }
 
-
-  return data as Aluno;
+  try {
+  const data = await response.json();
+  return data;
+  } catch (e) {
+    console.error(e);
+    return "Erro ao deletar o aluno"
+  }
 }
